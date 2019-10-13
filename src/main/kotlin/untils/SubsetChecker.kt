@@ -1,5 +1,6 @@
 package untils
 
+import models.Block
 import models.Board
 import models.Space
 import models.Subset
@@ -15,23 +16,28 @@ class SubsetChecker {
 
     fun run() {
         println("SubsetChecker")
-        println("Board w:${board.width} h:${board.height}")
-        subset.blocks.forEach { println("\tBlock w:${it.width} h:${it.height}") }
-
-        val space = Space(0, 0, board.width, board.height)
-
-        println("fit: " + space.willFit(subset.blocks[0]))
-        
-        var newSpaces = space.handleFit(subset.blocks[1])
-        newSpaces.forEach {
-            println("new space: x:${it.posX} y:${it.posY} w:${it.width} h:${it.height}")
-        }
-
-//        println("will fit init space")
-//        subset.blocks.forEach {
-//            println(space.willFit(it))
-//        }
-
 
     }
 }
+
+//        val space = Space(0, 0, 4, 4)
+//        val block = Block(3, 3, 1)
+//        println("fit: " + space.willFit(block))
+//        if (space.willFit(block)) {
+//            var newSpaces = space.handleFit(block)
+//            newSpaces.forEach {
+//                println("new space: x:${it.posX} y:${it.posY} w:${it.width} h:${it.height}")
+//            }
+//        }
+
+
+//        val space = Space(2, 2, 4, 4)
+//        val block = Block(6, 6, 1)
+//        val x = 2
+//        val y = 2
+//        println("intersect: ${space.willIntersect(block, x, y)}")
+//        if (space.willIntersect(block, x, y)) {
+//            val newSpaces = space.handleIntersection(block, x, y)
+//            println("new spaces")
+//            newSpaces.forEach { println("space x${it.posX} y:${it.posY} w:${it.width} h:${it.height}") }
+//        }
