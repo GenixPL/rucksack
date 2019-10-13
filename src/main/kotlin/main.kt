@@ -40,10 +40,10 @@ fun main() {
 //    for (k in 1..n) {
 //        val allCombinations = CombinationGenerator.generate(n, k)
 
-        val combinations = CombinationGenerator.generate(n, 3)
+        val combinations = CombinationGenerator.generate(n, n)
         val subset = Subset(blocks, combinations[0])
         val subsetChecker = SubsetChecker(subset, board)
-        subsetChecker.run()
+        println("can fit all: ${subsetChecker.run()}")
 
 //        allCombinations.forEach {
 //            val subset = Subset(blocks, it)

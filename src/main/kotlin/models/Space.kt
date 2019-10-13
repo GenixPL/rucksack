@@ -6,7 +6,7 @@ data class Space(
     val width: Int,
     val height: Int
 ) {
-    fun willFit(block: Block): Boolean {
+    fun canFit(block: Block): Boolean {
         return (block.width <= width) && (block.height <= height)
     }
 
