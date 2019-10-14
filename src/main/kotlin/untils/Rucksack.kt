@@ -2,6 +2,7 @@ package untils
 
 import models.Block
 import models.Board
+import models.FinalResult
 import models.Subset
 import java.io.File
 import java.util.*
@@ -41,7 +42,7 @@ class Rucksack {
         blocks.sortByDescending { it.area }
     }
 
-    fun findBest() {
+    fun findBest(): FinalResult {
         val time1 = System.currentTimeMillis()
         println("Checking starts...")
 
@@ -87,22 +88,10 @@ class Rucksack {
         val time2 = System.currentTimeMillis()
         print("Execution time: ${(time2 - time1) / 1000f} seconds")
 
-        println()
-        println("Best value: $bestValue")
-        println("Best subset: ")
-        bestSubset!!.blocks.forEach {
-            println(it)
-        }
-
-        generateImage(bestSubset!!)
-    }
-
-    private fun generateImage(subset: Subset) {
-        println("Generating image...")
-        val img = ImageGenerator(subset, board).generate()
-
-        val output = File("/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg")
-        val b = ImageIO.write(img, "jpg", output)
-        println("Generating done")
+        return FinalResult(
+            bestValue,
+            bestSubset!!,
+            ImageGenerator(bestSubset!!, board).generate()
+        )
     }
 }
