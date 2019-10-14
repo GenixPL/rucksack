@@ -46,17 +46,27 @@ class Rucksack {
         println("Checking starts...")
 
         // go through each possible subset size
-        for (k in 1..(blocks.size)) {
-            val allCombinations = CombinationGenerator.generate(blocks.size, k)
 
-            for (i in allCombinations.indices) {
-                val subset = Subset(blocks, allCombinations[i])
+        // checking from biggest combinations may reduce number of needed executions, since bigger
+        // sets are more probable to contain bigger totalValues, but we still have to check all possibilities
+        for (k in (blocks.size) downTo 1) {
+            val allCombinationsForK = CombinationGenerator.generate(blocks.size, k)
+            val allSubsetsForK = mutableListOf<Subset>()
+            allCombinationsForK.forEach {
+                allSubsetsForK.add(Subset(blocks, it))
+            }
 
-                if (subset.total_area > board.area) { //we can skip those that won't fit
+            // check them from the biggest value, which will significantly reduce number of executions
+            allSubsetsForK.sortByDescending { it.totalValue }
+
+            for (i in allSubsetsForK.indices) {
+                val subset = allSubsetsForK[i].copy()
+
+                if (subset.totalArea > board.area) { //we can skip those that won't fit
                     continue
                 }
 
-                if (subset.total_value < bestValue) { //we can skip those that can't generate better value
+                if (subset.totalValue < bestValue) { //we can skip those that can't generate better value
                     continue
                 }
 
@@ -64,32 +74,35 @@ class Rucksack {
                 val canFit: Boolean = subsetChecker.canFitBlocks()
 
                 if (canFit) {
-                    if (subset.total_value > bestValue) {
-                        bestValue = subset.total_value
+                    if (subset.totalValue > bestValue) {
+                        bestValue = subset.totalValue
                         //we have to create a new one, because SubsetChecker changes previous one
-                        bestSubset = Subset(blocks, allCombinations[i])
+                        bestSubset = allSubsetsForK[i]
                     }
                 }
             }
         }
 
-        println("Checking done...")
+        println("Checking done")
         val time2 = System.currentTimeMillis()
         print("Execution time: ${(time2 - time1) / 1000f} seconds")
 
         println()
         println("Best value: $bestValue")
-        println("Best subset: ${bestSubset!!.blocks.toList()}")
+        println("Best subset: ")
+        bestSubset!!.blocks.forEach {
+            println(it)
+        }
 
-        println("Generating image...")
         generateImage(bestSubset!!)
-        println("Done")
     }
 
     private fun generateImage(subset: Subset) {
+        println("Generating image...")
         val img = ImageGenerator(subset, board).generate()
 
         val output = File("/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg")
         ImageIO.write(img, "jpg", output)
+        println("Generating image done")
     }
 }

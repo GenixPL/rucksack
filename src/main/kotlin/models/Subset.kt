@@ -1,16 +1,19 @@
 package models
 
-class Subset {
+data class Subset(
+    private val allBlocks: List<Block>,
+    private val combination: IntArray
+) {
     val blocks: MutableList<Block> = mutableListOf()
-    var total_value = 0
-    var total_area = 0
+    var totalValue = 0
+    var totalArea = 0
 
-    constructor(allBlocks: List<Block>, combination: IntArray) {
+    init {
         combination.forEach {
             var currentBlock = allBlocks[it].copy()
             blocks.add(currentBlock)
-            total_value += currentBlock.value
-            total_area += currentBlock.area
+            totalValue += currentBlock.value
+            totalArea += currentBlock.area
         }
     }
 }
