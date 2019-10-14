@@ -102,7 +102,7 @@ class Rucksack {
         val img = ImageGenerator(subset, board).generate()
 
         val output = File("/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg")
-        ImageIO.write(img, "jpg", output)
-        println("Generating image done")
+        val b = ImageIO.write(img, "jpg", output)
+        println("Generating done")
     }
 }
