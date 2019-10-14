@@ -36,27 +36,46 @@ fun main() {
 
     blocks.sortByDescending { it.area }
 
-    //go through each possible combination size
-//    for (k in 1..n) {
-//        val allCombinations = CombinationGenerator.generate(n, k)
+    var bestValue = 0;
+    val time1 = System.currentTimeMillis()
+    println("ALGORITHM STARTS")
 
-        val combinations = CombinationGenerator.generate(n, n)
-        val subset = Subset(blocks, combinations[0])
-        val subsetChecker = SubsetChecker(subset, board)
-        println("can fit all: ${subsetChecker.run()}")
+    // go through each possible combination size
+    for (k in 1..n) {
+        val allCombinations = CombinationGenerator.generate(n, k)
 
-//        allCombinations.forEach {
-//            val subset = Subset(blocks, it)
-//
-//            //check subset total area
-//
-//            //check subset total value
-//
-//            val subsetChecker = SubsetChecker(subset, board)
-//            subsetChecker.run()
-//        }
-//    }
+        for (i in allCombinations.indices) {
+            val subset = Subset(blocks, allCombinations[i])
 
+            //check subset total area
+            if (subset.total_area > board.area) {
+                continue
+            }
+
+            //check subset total value
+            if (subset.total_value < bestValue) {
+                continue
+            }
+
+            val subsetChecker = SubsetChecker(subset, board)
+            val canFit: Boolean =  subsetChecker.run()
+
+            if (canFit) {
+//                println("subset ${it.toList()} with value ${subset.total_value} fits!")
+                if (subset.total_value > bestValue) {
+                    bestValue = subset.total_value
+                }
+            } else {
+//                println("subset ${it.toList()} with value ${subset.total_value} doesn't fit!")
+            }
+        }
+    }
+
+    val time2 = System.currentTimeMillis()
+    print("EXECUTION TIME: ${(time2-time1) / 1000} seconds")
+
+    println()
+    println("BEST VALUE $bestValue")
 }
 
 
