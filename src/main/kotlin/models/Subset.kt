@@ -13,7 +13,4 @@ class Subset {
             total_area += currentBlock.area
         }
     }
-
-    //TODO: exit when first block can't be packed in any way
-    //TODO: for some algorithms it may be best to sort blocks
 }
