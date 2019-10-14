@@ -4,7 +4,7 @@ import models.*
 import java.util.*
 
 /**
- * This class should be used only once - only one execution of 'canFitBlocks' will
+ * Object of this class should be used only once - only one execution of 'canFitBlocks' will
  * produce a proper result after construction
  */
 class SubsetChecker {

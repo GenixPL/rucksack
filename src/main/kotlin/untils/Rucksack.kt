@@ -3,12 +3,9 @@ package untils
 import models.Block
 import models.Board
 import models.Subset
-import java.awt.Color
-import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
-
 
 
 class Rucksack {
@@ -69,7 +66,8 @@ class Rucksack {
                 if (canFit) {
                     if (subset.total_value > bestValue) {
                         bestValue = subset.total_value
-                        bestSubset = subset
+                        //we have to create a new one, because SubsetChecker changes previous one
+                        bestSubset = Subset(blocks, allCombinations[i])
                     }
                 }
             }
@@ -83,18 +81,15 @@ class Rucksack {
         println("Best value: $bestValue")
         println("Best subset: ${bestSubset!!.blocks.toList()}")
 
-        print("Generating image...")
+        println("Generating image...")
         generateImage(bestSubset!!)
+        println("Done")
     }
 
     private fun generateImage(subset: Subset) {
-        var img = BufferedImage(board.width, board.height, BufferedImage.TYPE_BYTE_GRAY)
+        val img = ImageGenerator(subset, board).generate()
 
-        val g = img.graphics
-        g.color = Color.WHITE
-        g.fillRect(0, 0, 5, 5)
-
-        val outputfile = File("/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg")
-        ImageIO.write(img, "jpg", outputfile)
+        val output = File("/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg")
+        ImageIO.write(img, "jpg", output)
     }
 }
