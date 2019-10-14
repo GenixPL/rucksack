@@ -34,13 +34,15 @@ class ImageGenerator {
     private fun getImg(blocks: List<BlockForImage>): BufferedImage {
         val img = BufferedImage(board.width * mul, board.height * mul, BufferedImage.TYPE_3BYTE_BGR)
 
-        var cVal = 50
+        var rVal = 50
+        var gVal = 40
+        var bVal = 30
         for (i in blocks.indices) {
-            println(blocks[i])
             val g = img.graphics
-            val c = cVal % 255
-            cVal += 33
-            g.color = Color(255, c, c)
+            rVal += 33
+            gVal += 44
+            bVal += 22
+            g.color = Color(rVal % 255, gVal % 255, bVal % 255)
 
             val x = blocks[i].posX * mul
             val y = blocks[i].posY * mul
