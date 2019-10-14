@@ -3,6 +3,10 @@ package untils
 import models.*
 import java.util.*
 
+/**
+ * This class should be used only once - only one execution of 'canFitBlocks' will
+ * produce a proper result after construction
+ */
 class SubsetChecker {
     private val subset: Subset
     private val board: Board
@@ -16,9 +20,7 @@ class SubsetChecker {
         possibilities.push(Possibility(subset.blocks, initSpaces))
     }
 
-    fun run(): Boolean {
-        println("SubsetChecker run")
-
+    fun canFitBlocks(): Boolean {
         var canFitAllBlocks = false
 
         while (!possibilities.empty()) {
@@ -37,67 +39,12 @@ class SubsetChecker {
             var canFitBlock = false
 
             for (i in 0 until curPossibility.spaces.size) {
-                //if block fits, put it there, generate new spaces and create new possibilities
                 val curSpace = curPossibility.spaces[i]
 
-                if (curSpace.canFit(curBlock)) {
-                    canFitBlock = true
+                val res1 = handleBlockForSpace(curPossibility, i, curBlock, curSpace)
+                val res2 = handleBlockForSpace(curPossibility, i, curBlock.rotatedCopy(), curSpace)
 
-                    val newSpaces = mutableListOf<Space>()
-                    newSpaces.addAll(curSpace.handleFit(curBlock))
-
-                    for (j in 0 until curPossibility.spaces.size) {
-                        if (i == j) {
-                            continue
-                        }
-
-                        // if current block will intersect with some space, then add new spaces, in oder case
-                        // just add the same (untouched) space
-                        if (curPossibility.spaces[j].willIntersect(curBlock, curSpace.posX, curSpace.posY)) {
-                            newSpaces.addAll(
-                                curPossibility.spaces[j].handleIntersection(
-                                    curBlock,
-                                    curSpace.posX,
-                                    curSpace.posY
-                                )
-                            )
-                        } else {
-                            newSpaces.add(curPossibility.spaces[j].copy())
-                        }
-                    }
-
-                    possibilities.push(Possibility(curPossibility.copyBlocks(), newSpaces))
-                }
-
-                val rotated = curBlock.rotatedCopy()
-                if (curSpace.canFit(rotated)) {
-                    canFitBlock = true
-
-                    val newSpaces = mutableListOf<Space>()
-                    newSpaces.addAll(curSpace.handleFit(rotated))
-
-                    for (j in 0 until curPossibility.spaces.size) {
-                        if (i == j) {
-                            continue
-                        }
-
-                        // if current rotated block will intersect with some space, then add new spaces, in oder case
-                        // just add the same (untouched) space
-                        if (curPossibility.spaces[j].willIntersect(rotated, curSpace.posX, curSpace.posY)) {
-                            newSpaces.addAll(
-                                curPossibility.spaces[j].handleIntersection(
-                                    rotated,
-                                    curSpace.posX,
-                                    curSpace.posY
-                                )
-                            )
-                        } else {
-                            newSpaces.add(curPossibility.spaces[j].copy())
-                        }
-                    }
-
-                    possibilities.push(Possibility(curPossibility.copyBlocks(), newSpaces))
-                }
+                canFitBlock = (res1 || res2)
             }
 
             if (curPossibility.blocks.size == 0 && canFitBlock) {
@@ -108,26 +55,45 @@ class SubsetChecker {
 
         return canFitAllBlocks
     }
+
+    private fun handleBlockForSpace(
+        possibility: Possibility,
+        currentSpaceIndex: Int,
+        block: Block,
+        space: Space
+    ): Boolean {
+        var canFitBlock = false
+
+        if (space.canFit(block)) {
+            canFitBlock = true
+
+            val newSpaces = mutableListOf<Space>()
+            newSpaces.addAll(space.handleFit(block))
+
+            for (j in 0 until possibility.spaces.size) {
+                if (currentSpaceIndex == j) {
+                    continue
+                }
+
+                // if current block will intersect with some space, then add new spaces, in oder case
+                // just add the same (untouched) space
+                if (possibility.spaces[j].willIntersect(block, space.posX, space.posY)) {
+                    newSpaces.addAll(
+                        possibility.spaces[j].handleIntersection(
+                            block,
+                            space.posX,
+                            space.posY
+                        )
+                    )
+                } else {
+                    newSpaces.add(possibility.spaces[j].copy())
+                }
+            }
+
+            possibilities.push(Possibility(possibility.copyBlocks(), newSpaces))
+        }
+
+        return canFitBlock
+    }
 }
 
-//        val space = Space(0, 0, 4, 4)
-//        val block = Block(3, 3, 1)
-//        println("fit: " + space.willFit(block))
-//        if (space.willFit(block)) {
-//            var newSpaces = space.handleFit(block)
-//            newSpaces.forEach {
-//                println("new space: x:${it.posX} y:${it.posY} w:${it.width} h:${it.height}")
-//            }
-//        }
-
-
-//        val space = Space(2, 2, 4, 4)
-//        val block = Block(6, 6, 1)
-//        val x = 2
-//        val y = 2
-//        println("intersect: ${space.willIntersect(block, x, y)}")
-//        if (space.willIntersect(block, x, y)) {
-//            val newSpaces = space.handleIntersection(block, x, y)
-//            println("new spaces")
-//            newSpaces.forEach { println("space x${it.posX} y:${it.posY} w:${it.width} h:${it.height}") }
-//        }
