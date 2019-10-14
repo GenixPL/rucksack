@@ -23,6 +23,7 @@ fun main() {
 
     println("Generating image...")
     val output = File(outputPath)
+    // saving result to 'b' forces awaiting of this generating
     val b = ImageIO.write(res.bufferedImage, "jpg", output)
     println("Generating done")
 }
