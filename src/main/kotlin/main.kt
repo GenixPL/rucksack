@@ -2,12 +2,13 @@ import untils.Rucksack
 import java.io.File
 import javax.imageio.ImageIO
 
+//TODO: GUI
+const val filepath = "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data.txt"
+//const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
 
 //TODO: GUI
-const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
-
-//TODO: GUI
-const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
+const val outputPath = "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
+//const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
 
 //TODO: GUI print whose 'printlns' that are here and inside 'Rucksack.kt', because they are somehow
 // important, and don't cause much of a delay
