@@ -1,9 +1,5 @@
-import untils.CheckingThread
 import untils.Rucksack
-import untils.ThreadsManager
 import java.io.File
-import java.util.concurrent.Executors
-import java.util.concurrent.ThreadPoolExecutor
 import javax.imageio.ImageIO
 
 
@@ -16,11 +12,17 @@ const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-im
 //TODO: GUI print whose 'printlns' that are here and inside 'Rucksack.kt', because they are somehow
 // important, and don't cause much of a delay
 
+//TODO: GUI
 const val maxThreads = 10
+
+//TODO: GUI
 const val maxTime = 120L // seconds
 
+//TODO: GUI
+const val imgMultiplier = 10
+
 fun main() {
-    val res = Rucksack(filepath).findBest()
+    val res = Rucksack(filepath).findBest() ?: return
 
     println()
     println("Best value: ${res.bestValue}")
@@ -31,25 +33,7 @@ fun main() {
 
     println("Generating image...")
     val output = File(outputPath)
-    // saving result to 'b' forces awaiting of this generating
+    // saving result to 'b' forces awaiting for this generating to end
     val b = ImageIO.write(res.bufferedImage, "jpg", output)
     println("Generating done")
 }
-
-//fun checkThreads() {
-//    val threadsManager = ThreadsManager()
-//
-//    val executor = Executors.newFixedThreadPool(10) as ThreadPoolExecutor
-//
-//    for (i in 50 downTo 0) {
-//        val newThread = CheckingThread(i * 100L)
-//        newThread.addListener(threadsManager)
-//        println("Created : " + newThread.id)
-//
-//        executor.execute(newThread)
-//    }
-//
-//    executor.shutdown()
-//}
-
-

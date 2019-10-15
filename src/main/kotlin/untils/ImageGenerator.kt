@@ -1,5 +1,6 @@
 package untils
 
+import imgMultiplier
 import models.*
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -13,7 +14,7 @@ class ImageGenerator {
     private val subset: Subset
     private val board: Board
     private val possibilities: Stack<PossibilityForImage> = Stack()
-    private val mul = 10
+    private val mul = imgMultiplier
 
 
     constructor(subset: Subset, board: Board) {

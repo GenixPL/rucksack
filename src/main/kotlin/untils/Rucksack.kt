@@ -14,17 +14,14 @@ import javax.imageio.ImageIO
 import java.util.concurrent.TimeUnit
 
 
-
-
-class Rucksack {
+class Rucksack(pathToData: String) {
     private val board: Board
     private val blocks = mutableListOf<Block>()
 
     private var bestValue = -1
     private var bestSubset: Subset? = null
 
-    constructor(pathToData: String) {
-        //read input
+    init {
         val file = File(pathToData)
         val scanner = Scanner(file)
 
@@ -46,21 +43,21 @@ class Rucksack {
             this.blocks.add(Block(w, h, v))
         }
 
+        // sort blocks by area (in descending order), they will be passed in this order and it will
+        // reduce number of needed executions, since bigger blocks won't fit with bigger probability
+        // and checking will end
         blocks.sortByDescending { it.area }
     }
 
-    fun findBest(): FinalResult {
-        val time1 = System.currentTimeMillis()
-        println("Checking starts...")
-
-        // go through each possible subset size
-
-        // checking from biggest combinations may reduce number of needed executions, since bigger
-        // sets are more probable to contain bigger totalValues, but we still have to check all possibilities
-
+    fun findBest(): FinalResult? {
         val threadsManager = ThreadsManager()
         val executor = Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor
 
+        println("Checking starts...")
+        val time1 = System.currentTimeMillis()
+
+        // checking from biggest combinations may reduce number of needed executions, since bigger
+        // sets are more probable to contain bigger totalValues, but we still have to check all possibilities
         for (k in (blocks.size) downTo 1) {
             val allCombinationsForK = CombinationGenerator.generate(blocks.size, k)
             val allSubsetsForK = mutableListOf<Subset>()
@@ -68,17 +65,20 @@ class Rucksack {
                 allSubsetsForK.add(Subset(blocks, it))
             }
 
-            // check them from the biggest value, which will significantly reduce number of executions
+            // check them from the biggest value, which will (in most cases)
+            // significantly reduce number of needed executions
             allSubsetsForK.sortByDescending { it.totalValue }
 
             for (i in allSubsetsForK.indices) {
                 val subset = allSubsetsForK[i].copy()
 
-                if (subset.totalArea > board.area) { //we can skip those that won't fit
+                // we can skip those that won't fit
+                if (subset.totalArea > board.area) {
                     continue
                 }
 
-                if (subset.totalValue < threadsManager.getBestValue()) { //we can skip those that can't generate better value
+                // we can skip those that can't generate better value
+                if (subset.totalValue < threadsManager.getBestValue()) {
                     continue
                 }
 
@@ -101,9 +101,9 @@ class Rucksack {
 
         executor.shutdown()
         val finished = executor.awaitTermination(maxTime, TimeUnit.SECONDS)
-
         if (!finished) {
-            println("program will execute for more than a minute")
+            println("Program will execute for more than a $maxTime seconds (terminating)")
+            return null
         }
 
         println("Checking done")
