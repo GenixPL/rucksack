@@ -1,12 +1,19 @@
 package untils
 
+import maxThreads
+import maxTime
 import models.Block
 import models.Board
 import models.FinalResult
 import models.Subset
 import java.io.File
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadPoolExecutor
 import javax.imageio.ImageIO
+import java.util.concurrent.TimeUnit
+
+
 
 
 class Rucksack {
@@ -50,6 +57,10 @@ class Rucksack {
 
         // checking from biggest combinations may reduce number of needed executions, since bigger
         // sets are more probable to contain bigger totalValues, but we still have to check all possibilities
+
+        val threadsManager = ThreadsManager()
+        val executor = Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor
+
         for (k in (blocks.size) downTo 1) {
             val allCombinationsForK = CombinationGenerator.generate(blocks.size, k)
             val allSubsetsForK = mutableListOf<Subset>()
@@ -67,21 +78,32 @@ class Rucksack {
                     continue
                 }
 
-                if (subset.totalValue < bestValue) { //we can skip those that can't generate better value
+                if (subset.totalValue < threadsManager.getBestValue()) { //we can skip those that can't generate better value
                     continue
                 }
 
-                val subsetChecker = SubsetChecker(subset, board)
-                val canFit: Boolean = subsetChecker.canFitBlocks()
+                val newThread = CheckingThread(SubsetChecker(subset, board), subset)
+                newThread.addListener(threadsManager)
+                executor.execute(newThread)
 
-                if (canFit) {
-                    if (subset.totalValue > bestValue) {
-                        bestValue = subset.totalValue
-                        //we have to create a new one, because SubsetChecker changes previous one
-                        bestSubset = allSubsetsForK[i]
-                    }
-                }
+//                val subsetChecker = SubsetChecker(subset, board)
+//                val canFit: Boolean = subsetChecker.canFitBlocks()
+//
+//                if (canFit) {
+//                    if (subset.totalValue > bestValue) {
+//                        bestValue = subset.totalValue
+//                        //we have to create a new one, because SubsetChecker changes previous one
+//                        bestSubset = allSubsetsForK[i]
+//                    }
+//                }
             }
+        }
+
+        executor.shutdown()
+        val finished = executor.awaitTermination(maxTime, TimeUnit.SECONDS)
+
+        if (!finished) {
+            println("program will execute for more than a minute")
         }
 
         println("Checking done")
@@ -89,9 +111,15 @@ class Rucksack {
         print("Execution time: ${(time2 - time1) / 1000f} seconds")
 
         return FinalResult(
-            bestValue,
-            bestSubset!!,
-            ImageGenerator(bestSubset!!, board).generate()
+            threadsManager.getBestValue(),
+            threadsManager.getBestSubset(),
+            ImageGenerator(threadsManager.getBestSubset(), board).generate()
         )
+
+//        return FinalResult(
+//            bestValue,
+//            bestSubset!!,
+//            ImageGenerator(bestSubset!!, board).generate()
+//        )
     }
 }
