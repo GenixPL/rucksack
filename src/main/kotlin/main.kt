@@ -8,6 +8,27 @@ import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.reflect.typeOf
+import javax.swing.JFrame
+import javax.swing.text.StyleConstants.setIcon
+import javax.swing.JLabel
+import java.awt.FlowLayout
+import java.util.concurrent.Flow
+import javax.swing.JSplitPane
+import java.awt.Dimension
+import javax.swing.text.StyleConstants.setComponent
+import javax.swing.text.StyleConstants.setIcon
+import javax.swing.ImageIcon
+import java.awt.Color
+import javax.swing.text.StyleConstants.setBackground
+import javax.swing.JButton
+import javax.swing.JScrollPane
+import javax.swing.BoxLayout
+
+
+
+
+
+
 
 
 //TODO: GUI
@@ -23,20 +44,13 @@ const val outputPath =
 //TODO: GUI print whose 'printlns' that are here and inside 'Rucksack.kt', because they are somehow
 // important, and don't cause much of a delay
 
-//TODO: GUI
 var maxThreads = 10
-
-//TODO: GUI
 var maxTime = 120L // seconds
-
-//TODO: GUI
 var imgMultiplier = 10
 
 var textMaxThreads = JTextField("10")
 var textMaxTime = JTextField("3600")
 var textImgMultiplier = JTextField("10")
-var isWaiting = false
-val btnSelectdirectory = JButton("Choose image")
 
 fun main() {
 
@@ -67,35 +81,39 @@ fun main() {
     val output = File(outputPath)
     // saving result to 'b' forces awaiting for this generating to end
     val b = ImageIO.write(res.bufferedImage, "jpg", output)
+    displayImage(outputPath, frame)
     println("Generating done")
 }
 
 fun createJFrame(): JFrame {
-    isWaiting = true
     val frame = JFrame("Karol Klosowski - program")
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-    frame.setSize(700, 700)
     frame.setExtendedState(JFrame.MAXIMIZED_BOTH)
-    frame.setResizable(true)
-    frame.setVisible(true)
 
-    val splitPane = JSplitPane()
-    frame.getContentPane().add(splitPane, BorderLayout.EAST)
+    val panel1 = JPanel()
+    val boxlayout = BoxLayout(panel1, BoxLayout.Y_AXIS)
+    panel1.setLayout(boxlayout);
+    val lbl = JLabel()
+    val temp = ImageIcon()
 
+    lbl.icon = temp
+    panel1.add(lbl)
+
+    val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, JButton("XD"));
+    frame.contentPane.add(splitPane, BorderLayout.WEST)
     val box = JPanel(FlowLayout()) //JPanel containing all buttons
     box.preferredSize = Dimension(125, 1700)
-    splitPane.leftComponent = box
+//    frame.add(box)
+    frame.contentPane.add(box, BorderLayout.EAST)
+
     val label_1 = JLabel("Options")
     box.add(label_1)
     val panelImages = JPanel() //JPanel which displays loaded images
 
     val labelMaxThreads = JLabel("maxThreads")
     val labelMaxTime = JLabel("maxTime")
-    val labelImgMultiplier = JLabel("maxTime")
+    val labelImgMultiplier = JLabel("imgMultiplier")
 
-
-    panelImages.removeAll()
-    panelImages.updateUI()
     val canvas = Canvas()
     val bufferedImage = BufferedImage(1725, 995, BufferedImage.TYPE_INT_ARGB)
     val graphics2D = bufferedImage.createGraphics()
@@ -130,29 +148,37 @@ fun createJFrame(): JFrame {
 
     box.add(textFields)
 
-    btnSelectdirectory.addActionListener {
-        val label: JLabel
-        label = JLabel()
+    val btnSelectDirectory = JButton("Choose image")
+    btnSelectDirectory.addActionListener {
+        val label = JLabel()
         panelImages.add(label)
         val file = JFileChooser()
         file.currentDirectory = File("./src/main/kotlin")
-        //filter the files
+
         val filter = FileNameExtensionFilter("*.Text", "txt")
         file.addChoosableFileFilter(filter)
         val result = file.showSaveDialog(null)
 
         if (result == JFileChooser.APPROVE_OPTION) {
-
             val selectedFile = file.selectedFile
             filepath = selectedFile.toString()
-            isWaiting = false
         } else if (result == JFileChooser.CANCEL_OPTION) {
-            println("No File Select")
+            println("No File Selected")
         }
     }
-    btnSelectdirectory.preferredSize = Dimension(125, 25)
-    box.add(btnSelectdirectory)
+    btnSelectDirectory.preferredSize = Dimension(125, 25)
+    box.add(btnSelectDirectory)
 
     frame.isVisible = true
     return frame
+}
+
+fun displayImage(outputPath: String, frame: JFrame){
+    val file = File(outputPath)
+    val image = ImageIO.read(file)
+    val icon = ImageIcon(image)
+    val lbl = JLabel()
+    lbl.icon = icon
+    frame.contentPane.add(lbl, BorderLayout.CENTER)
+    frame.isVisible = true
 }
