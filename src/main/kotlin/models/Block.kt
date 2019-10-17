@@ -10,4 +10,8 @@ data class Block(
     fun rotatedCopy(): Block {
         return Block(height, width, value)
     }
+
+    fun isSquare(): Boolean {
+        return (width == height)
+    }
 }
