@@ -36,10 +36,10 @@ class Rucksack(pathToData: String) {
             val v = scanner.nextInt()
 
             //skip those that won't fit
-            if (w > wBoard || h > hBoard) {
+
+            if ((w > wBoard || w > hBoard ) && ( h > hBoard || h > wBoard)) {
                 continue
             }
-
             this.blocks.add(Block(w, h, v))
         }
 
