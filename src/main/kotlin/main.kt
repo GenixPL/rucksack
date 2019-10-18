@@ -7,107 +7,112 @@ import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.BoxLayout
+import javax.swing.border.Border
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.math.roundToInt
 
-
-//TODO: GUI
-var filepath =
+var filepath = //const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
     "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data -W.txt"
-//const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
 
-//TODO: GUI
-const val outputPath =
+const val outputPath = //const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
     "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
-//const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
 
 //TODO: GUI print whose 'printlns' that are here and inside 'Rucksack.kt', because they are somehow
 // important, and don't cause much of a delay
 
 var maxThreads = 10
-var maxTime = 120L // seconds
+var maxTime = 3600L // seconds
 var imgMultiplier = 10
 
-var textMaxThreads = JTextField("10")
-var textMaxTime = JTextField("3600")
-var textImgMultiplier = JTextField("10")
-val panelImages = JPanel() //JPanel which displays loaded images
-val panelBlocks = JPanel()
+val panelImage = JPanel() //JPanel which displays generated image
+val panelBlocks = JPanel() //JPanel which displays blocks one by one
+
+val textMaxThreads = JTextField("10")
+val textMaxTime = JTextField("3600")
+val textImgMultiplier = JTextField("10")
+
+
 fun main() {
-    val boxlayout = BoxLayout(panelBlocks, BoxLayout.Y_AXIS)
-    panelBlocks.setLayout(boxlayout);
-    val frame = createJFrame()
+    runProgram()
 }
 
-fun createJFrame(): JFrame {
+
+fun runProgram(){
+    val frame = initFrameProperties()
+
+    addFrameComponents(frame)
+
+    frame.isVisible = true
+}
+
+
+fun initFrameProperties(): JFrame {
+
     val frame = JFrame("Rucksack algorithm")
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
     frame.extendedState = JFrame.MAXIMIZED_BOTH
 
-    val panel1 = JPanel()
-    val boxlayout = BoxLayout(panel1, BoxLayout.Y_AXIS)
-    panel1.layout = boxlayout
-    val lbl = JLabel()
-    val temp = ImageIcon()
-    frame.contentPane.add(panelImages, BorderLayout.CENTER)
+    return frame
+}
 
-    lbl.icon = temp
-    panel1.add(lbl)
 
-//    val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, panelBlocks);
-    frame.contentPane.add(panelBlocks, BorderLayout.WEST)
-    val box = JPanel(FlowLayout()) //JPanel containing all buttons
-    box.preferredSize = Dimension(125, 1700)
-//    frame.add(box)
-    frame.contentPane.add(box, BorderLayout.EAST)
+fun addFrameComponents(frame: JFrame){
 
-    val label_1 = JLabel("Options")
-    box.add(label_1)
-    val panelImages = JPanel() //JPanel which displays loaded images
+    panelBlocks.preferredSize = Dimension(700, 3000)
+    val scrollPane = JScrollPane(panelBlocks, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
+    frame.contentPane.add(scrollPane, BorderLayout.WEST)
+    frame.contentPane.add(panelImage, BorderLayout.CENTER)
 
-    val labelMaxThreads = JLabel("maxThreads")
-    val labelMaxTime = JLabel("maxTime")
-    val labelImgMultiplier = JLabel("imgMultiplier")
+    val optionsPanel = createOptionsPanel(frame)
+    frame.contentPane.add(optionsPanel, BorderLayout.EAST)
 
-    val canvas = Canvas()
-    val bufferedImage = BufferedImage(1725, 995, BufferedImage.TYPE_INT_ARGB)
-    val graphics2D = bufferedImage.createGraphics()
-    graphics2D.background = Color(255, 255, 255)
-    val icon = ImageIcon(bufferedImage)
-    val label = JLabel(icon)
-    label.updateUI()
+    val boxLayout = BoxLayout(panelBlocks, BoxLayout.Y_AXIS)
+    panelBlocks.layout = boxLayout
+}
 
-    canvas.setSize(1725, 995)
-    canvas.background = Color(255, 255, 255)
+fun createOptionsPanel(frame: JFrame): JPanel {
 
-    panelImages.add(label)
+    val optionsPanel = JPanel(FlowLayout()) //JPanel with all text fields and buttons
+    optionsPanel.preferredSize = Dimension(125, 1000)
+
+    val optionsLabel = JLabel("Options")
+    optionsPanel.add(optionsLabel)
 
     val textFields = JPanel()
     textFields.layout = BoxLayout(textFields, BoxLayout.Y_AXIS)
 
+    val labelMaxThreads = JLabel("maxThreads")
     textFields.add(labelMaxThreads)
 
     textMaxThreads.preferredSize = Dimension(100, 20)
     textFields.add(textMaxThreads)
 
+    val labelMaxTime = JLabel("maxTime")
     textFields.add(labelMaxTime)
 
     textMaxTime.preferredSize = Dimension(100, 20)
     textFields.add(textMaxTime)
 
+    val labelImgMultiplier = JLabel("imgMultiplier")
     textFields.add(labelImgMultiplier)
 
     textImgMultiplier.preferredSize = Dimension(100, 20)
     textFields.add(textImgMultiplier)
 
-    box.add(textFields)
+    optionsPanel.add(textFields)
+
+    addButtons(optionsPanel, frame)
+
+    return optionsPanel
+}
+
+fun addButtons(optionsPanel: JPanel, frame: JFrame) {
 
     val btnSelectDirectory = JButton("Choose file")
     btnSelectDirectory.addActionListener {
-        val label = JLabel()
-        panelImages.add(label)
         val file = JFileChooser()
         file.currentDirectory = File("./src/main/kotlin")
+        getValuesFromTextFields()
 
         val filter = FileNameExtensionFilter("*.Text", "txt")
         file.addChoosableFileFilter(filter)
@@ -119,25 +124,25 @@ fun createJFrame(): JFrame {
         } else if (result == JFileChooser.CANCEL_OPTION) {
             println("No File Selected")
         }
+        displayBlocks()
     }
     btnSelectDirectory.preferredSize = Dimension(125, 25)
-    box.add(btnSelectDirectory)
+    optionsPanel.add(btnSelectDirectory)
 
     val btnStartRucksack = JButton("Start")
     btnStartRucksack.addActionListener {
         println("filePath: " + filepath)
 
-        maxThreads = textMaxThreads.text.toInt()
-        maxTime = textMaxTime.text.toLong()
-        imgMultiplier = textImgMultiplier.text.toInt()
+        getValuesFromTextFields()
 
         println("maxThread: " + maxThreads)
         println("maxTime: " + maxTime)
         println("imgMultiplier: " + imgMultiplier)
+
         val res = Rucksack(filepath).findBest()// ?: return
 
-        println()
-        println("Best value: ${res?.bestValue}")
+//        println()
+        println("\nBest value: ${res?.bestValue}")
         println("Best subset: ")
         res?.bestSubset?.blocks?.forEach {
             println(it)
@@ -145,32 +150,37 @@ fun createJFrame(): JFrame {
 
         println("Generating image...")
         val output = File(outputPath)
+
         // saving result to 'b' forces awaiting for this generating to end
         val b = ImageIO.write(res?.bufferedImage, "jpg", output)
-        displayImage(outputPath, frame)
-        displayBlocks()
-        println("Generating done")
 
+        displayImage(outputPath)
+        println("Generating done")
     }
     btnStartRucksack.preferredSize = Dimension(125, 25)
-    box.add(btnStartRucksack)
-    displayBlocks()
-    frame.isVisible = true
-    return frame
+    optionsPanel.add(btnStartRucksack)
 }
 
-fun displayImage(outputPath: String, frame: JFrame) {
+
+fun getValuesFromTextFields(){
+    maxThreads = textMaxThreads.text.toInt()
+    maxTime = textMaxTime.text.toLong()
+    imgMultiplier = textImgMultiplier.text.toInt()
+}
+
+
+fun displayImage(outputPath: String) {
     val file = File(outputPath)
     val image = ImageIO.read(file)
-    val icon = ImageIcon(image)
-    val lbl = JLabel()
 
-    panelImages.removeAll()
-    panelImages.updateUI()
-    panelImages.add(lbl)
-    lbl.icon = icon
-    frame.isVisible = true
+    val lbl = JLabel()
+    lbl.icon = ImageIcon(image)
+
+    panelImage.removeAll()
+    panelImage.updateUI()
+    panelImage.add(lbl)
 }
+
 
 fun displayBlocks() {
     val file = File(filepath)
@@ -188,28 +198,34 @@ fun displayBlocks() {
 
         blocks.add(Block(w, h, v))
     }
-    var maxV = 0
+
+    var maxValue = 0
+
+    //this loop is used to find maximum value
     blocks.forEach {
-        if(maxV < it.value)
-            maxV = it.value
+        if (maxValue < it.value)
+            maxValue = it.value
     }
+
     panelBlocks.removeAll()
 
+    //this loop is used to display blocks one by one
     blocks.forEach {
-        val lbl = JLabel()
+        var description = "w: " + it.width.toString() + " h: " + it.height.toString() + " v: " + it.value.toString()
+        panelBlocks.add(JLabel(description))
 
+        val lbl = JLabel()
+        lbl.icon = createImageIcon(it.width, it.height, it.value.toFloat() / maxValue)
         panelBlocks.add(lbl)
-        lbl.icon = createImageIcon(it.width, it.height, it.value.toFloat() / maxV)
     }
-        panelBlocks.updateUI()
+    panelBlocks.updateUI()
 
 }
 
-
-fun createImageIcon(w: Int, h: Int, v: Float) : ImageIcon{
+fun createImageIcon(w: Int, h: Int, v: Float): ImageIcon {
     val bufferedImage = BufferedImage(w * imgMultiplier, h * imgMultiplier, BufferedImage.TYPE_INT_RGB)
     val graphics2D = bufferedImage.createGraphics()
-    graphics2D.paint = Color( (255 * v).roundToInt(), 0,0)
+    graphics2D.paint = Color((255 * v).roundToInt(), 0, 0)
     graphics2D.fillRect(0, 0, w * imgMultiplier, h * imgMultiplier)
 
     return ImageIcon(bufferedImage)
