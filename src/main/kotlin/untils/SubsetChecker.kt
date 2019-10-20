@@ -42,7 +42,10 @@ class SubsetChecker {
                 val curSpace = curPossibility.spaces[i]
 
                 val res1 = handleBlockForSpace(curPossibility, i, curBlock, curSpace)
-                val res2 = handleBlockForSpace(curPossibility, i, curBlock.rotatedCopy(), curSpace)
+                var res2 = false
+                if (!curBlock.isSquare()) {
+                    res2 = handleBlockForSpace(curPossibility, i, curBlock.rotatedCopy(), curSpace)
+                }
 
                 canFitBlock = (res1 || res2)
             }
