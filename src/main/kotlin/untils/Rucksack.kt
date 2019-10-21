@@ -85,17 +85,6 @@ class Rucksack(pathToData: String) {
                 val newThread = CheckingThread(SubsetChecker(subset, board), subset)
                 newThread.addListener(threadsManager)
                 executor.execute(newThread)
-
-//                val subsetChecker = SubsetChecker(subset, board)
-//                val canFit: Boolean = subsetChecker.canFitBlocks()
-//
-//                if (canFit) {
-//                    if (subset.totalValue > bestValue) {
-//                        bestValue = subset.totalValue
-//                        //we have to create a new one, because SubsetChecker changes previous one
-//                        bestSubset = allSubsetsForK[i]
-//                    }
-//                }
             }
         }
 
@@ -113,13 +102,7 @@ class Rucksack(pathToData: String) {
         return FinalResult(
             threadsManager.getBestValue(),
             threadsManager.getBestSubset(),
-            ImageGenerator(threadsManager.getBestSubset(), board).generate()
+            ImageGenerator(threadsManager.getBestSubset().copy(), board).generate()
         )
-
-//        return FinalResult(
-//            bestValue,
-//            bestSubset!!,
-//            ImageGenerator(bestSubset!!, board).generate()
-//        )
     }
 }
