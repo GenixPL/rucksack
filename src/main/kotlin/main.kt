@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.math.roundToInt
 
 var filepath = //const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
-    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data -W.txt"
+    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data.txt"
 
 const val outputPath = //const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
     "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
@@ -31,11 +31,9 @@ val textMaxThreads = JTextField("10")
 val textMaxTime = JTextField("3600")
 val textImgMultiplier = JTextField("100")
 
-
 fun main() {
     runProgram()
 }
-
 
 fun runProgram(){
     val frame = initFrameProperties()
@@ -45,33 +43,35 @@ fun runProgram(){
     frame.isVisible = true
 }
 
-
 fun initFrameProperties(): JFrame {
-
     val frame = JFrame("Rucksack algorithm")
+
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
     frame.extendedState = JFrame.MAXIMIZED_BOTH
-
+    frame.minimumSize = Dimension(400, 1000)
     return frame
 }
 
-
 fun addFrameComponents(frame: JFrame){
-
     panelBlocks.preferredSize = Dimension(700, 3000)
     val scrollPane = JScrollPane(panelBlocks, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
     frame.contentPane.add(scrollPane, BorderLayout.WEST)
-    frame.contentPane.add(panelImage, BorderLayout.CENTER)
+
+    panelImage.preferredSize = Dimension(3000, 3000)
+    val scrollPaneImage = JScrollPane(panelImage, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
+    frame.contentPane.add(scrollPaneImage, BorderLayout.CENTER)
 
     val optionsPanel = createOptionsPanel(frame)
     frame.contentPane.add(optionsPanel, BorderLayout.EAST)
 
     val boxLayout = BoxLayout(panelBlocks, BoxLayout.Y_AXIS)
     panelBlocks.layout = boxLayout
+
+    val boxLayoutImage = BoxLayout(panelImage, BoxLayout.Y_AXIS)
+    panelImage.layout = boxLayoutImage
 }
 
 fun createOptionsPanel(frame: JFrame): JPanel {
-
     val optionsPanel = JPanel(FlowLayout()) //JPanel with all text fields and buttons
     optionsPanel.preferredSize = Dimension(125, 1000)
 
@@ -107,7 +107,6 @@ fun createOptionsPanel(frame: JFrame): JPanel {
 }
 
 fun addButtons(optionsPanel: JPanel, frame: JFrame) {
-
     val btnSelectDirectory = JButton("Choose file")
     btnSelectDirectory.addActionListener {
         val file = JFileChooser()
@@ -131,17 +130,10 @@ fun addButtons(optionsPanel: JPanel, frame: JFrame) {
 
     val btnStartRucksack = JButton("Start")
     btnStartRucksack.addActionListener {
-        println("filePath: " + filepath)
-
         getValuesFromTextFields()
-
-        println("maxThread: " + maxThreads)
-        println("maxTime: " + maxTime)
-        println("imgMultiplier: " + imgMultiplier)
 
         val res = Rucksack(filepath).findBest()// ?: return
 
-//        println()
         println("\nBest value: ${res?.bestValue}")
         println("Best subset: ")
         res?.bestSubset?.blocks?.forEach {
@@ -161,13 +153,11 @@ fun addButtons(optionsPanel: JPanel, frame: JFrame) {
     optionsPanel.add(btnStartRucksack)
 }
 
-
 fun getValuesFromTextFields(){
     maxThreads = textMaxThreads.text.toInt()
     maxTime = textMaxTime.text.toLong()
     imgMultiplier = textImgMultiplier.text.toInt()
 }
-
 
 fun displayImage(outputPath: String) {
     val file = File(outputPath)
@@ -180,7 +170,6 @@ fun displayImage(outputPath: String) {
     panelImage.updateUI()
     panelImage.add(lbl)
 }
-
 
 fun displayBlocks() {
     val file = File(filepath)

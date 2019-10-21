@@ -5,6 +5,7 @@ import models.*
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Object of this class should be used only once - only one execution will
@@ -19,7 +20,7 @@ class ImageGenerator {
 
     constructor(subset: Subset, board: Board) {
         this.board = board
-        this.subset = subset
+        this.subset = subset.copy()
 
         val initSpaces = mutableListOf(Space(0, 0, board.width, board.height))
         val initPlacedBlocks = mutableListOf<BlockForImage>()
@@ -35,15 +36,19 @@ class ImageGenerator {
     private fun getImg(blocks: List<BlockForImage>): BufferedImage {
         val img = BufferedImage(board.width * mul, board.height * mul, BufferedImage.TYPE_3BYTE_BGR)
 
-        var rVal = 50
-        var gVal = 40
-        var bVal = 30
+        var maxValue = 0
+        this.subset.blocks.forEach {
+            if(maxValue < it.value)
+                maxValue = it.value
+        }
+
+        println("this.subset: " + this.subset.blocks.size)
         for (i in blocks.indices) {
             val g = img.graphics
-            rVal += 33
-            gVal += 44
-            bVal += 22
-            g.color = Color(rVal % 255, gVal % 255, bVal % 255)
+
+            val v = this.subset.blocks[i].value.toFloat() / maxValue
+
+            g.color = Color((255 * v).roundToInt(), 0, 0)
 
             val x = blocks[i].posX * mul
             val y = blocks[i].posY * mul
