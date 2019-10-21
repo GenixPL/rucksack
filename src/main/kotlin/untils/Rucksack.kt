@@ -97,7 +97,7 @@ class Rucksack(pathToData: String) {
 
         println("Checking done")
         val time2 = System.currentTimeMillis()
-        print("Execution time: ${(time2 - time1) / 1000f} seconds")
+        println("Execution time: ${(time2 - time1) / 1000f} seconds")
 
         return FinalResult(
             threadsManager.getBestValue(),

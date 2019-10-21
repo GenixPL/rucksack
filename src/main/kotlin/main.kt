@@ -22,14 +22,14 @@ const val outputPath = //const val outputPath = "/Users/genix/Projects/rucksack/
 
 var maxThreads = 10
 var maxTime = 3600L // seconds
-var imgMultiplier = 10
+var imgMultiplier = 100
 
 val panelImage = JPanel() //JPanel which displays generated image
 val panelBlocks = JPanel() //JPanel which displays blocks one by one
 
 val textMaxThreads = JTextField("10")
 val textMaxTime = JTextField("3600")
-val textImgMultiplier = JTextField("10")
+val textImgMultiplier = JTextField("100")
 
 
 fun main() {
