@@ -55,6 +55,8 @@ class ImageGenerator {
             val w = blocks[i].width * mul
             val h = blocks[i].height * mul
             g.fillRect(x, y, w, h)
+            g.color = Color(0, 0, 0)
+            g.drawRect(x, y, w, h)
         }
 
         return img
