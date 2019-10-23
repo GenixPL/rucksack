@@ -124,6 +124,8 @@ fun addButtons(optionsPanel: JPanel, frame: JFrame) {
             println("No File Selected")
         }
         displayBlocks()
+        panelImage.removeAll()
+        panelImage.updateUI()
     }
     btnSelectDirectory.preferredSize = Dimension(125, 25)
     optionsPanel.add(btnSelectDirectory)
