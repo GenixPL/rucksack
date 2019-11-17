@@ -42,7 +42,6 @@ class ImageGenerator {
                 maxValue = it.value
         }
 
-        println("this.subset: " + this.subset.blocks.size)
         for (i in blocks.indices) {
             val g = img.graphics
 

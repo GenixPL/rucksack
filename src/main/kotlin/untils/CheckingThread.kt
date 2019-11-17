@@ -26,7 +26,7 @@ class CheckingThread(
     }
 
     override fun run() {
-        println("Thread (${this.id}) starts checking subset of length: ${subset.blocks.size}")
+        println("New Thread starts checking permutation: ${subset.permutation.joinToString()}")
         var canFit = false
         try {
             canFit = doRun()

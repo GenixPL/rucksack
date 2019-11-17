@@ -1,6 +1,7 @@
 package untils
 
 import maxThreads
+import maxTime
 import models.Block
 import models.Board
 import models.FinalResult
@@ -11,14 +12,15 @@ import kotlin.math.pow
 import java.util.ArrayList
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 
 class Rucksack(pathToData: String) {
     private val board: Board
     private val blocks = mutableListOf<Block>()
 
-    private var bestValue = -1
-    private var bestSubset: Subset? = null
+    private val threadsManager = ThreadsManager()
+    private val executor = Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor
 
     init {
         val file = File(pathToData)
@@ -45,16 +47,15 @@ class Rucksack(pathToData: String) {
     }
 
     fun findBest(): FinalResult? {
-        val threadsManager = ThreadsManager()
-        val executor = Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor
-
+        println()
+        println()
         println("Checking starts...")
         val time1 = System.currentTimeMillis()
 
         // GENERATE COMBINATIONS - INIT
-        val size: Double = blocks.size.toDouble();
+        val size: Double = blocks.size.toDouble()
         val powerSetSize: Long = (2.0.pow(size)).toLong()
-        var counter: Int = 0
+        var counter = 0
         var j: Int
 
         /*Run from counter 000..0 to 111..1*/
@@ -77,91 +78,54 @@ class Rucksack(pathToData: String) {
                 continue
             }
 
-            println("combination: $combination")
-
-            val currentSubset = Subset(blocks, combination.toIntArray())
-
-            
-            println()
+            permute(combination, 0, combination.size - 1)
         }
 
+        executor.shutdown()
+        val finished = executor.awaitTermination(maxTime, TimeUnit.SECONDS)
+        if (!finished) {
+            println("Program terminates due to time limit ($maxTime)")
+            return null
+        }
 
-        return null
+        println("Checking done")
+        val time2 = System.currentTimeMillis()
 
-//        for (k in (blocks.size) downTo 1) {
-//            println("Checking subsets of size $k")
-//            val allCombinationsForK = CombinationGenerator.generate(blocks.size, k)
-//            println("\t number of combinations to check for this size: ${allCombinationsForK.size}")
-//            val allSubsetsForK = mutableListOf<Subset>()
-//            allCombinationsForK.forEach {
-////                allSubsetsForK.add(Subset(blocks, it))
-//            }
-//
-//            // check them from the biggest value, which will (in most cases)
-//            // significantly reduce number of needed executions
-//            allSubsetsForK.sortByDescending { it.totalValue }
-//
-//            for (i in allSubsetsForK.indices) {
-//                val subset = allSubsetsForK[i].copy()
-//
-//                // we can skip those that won't fit
-//                if (subset.totalArea > board.area) {
-//                    continue
-//                }
-//
-//                // we can skip those that can't generate better value
-//                if (subset.totalValue < threadsManager.getBestValue()) {
-//                    continue
-//                }
-//
-//                val newThread = CheckingThread(SubsetChecker(subset, board), subset)
-//                newThread.addListener(threadsManager)
-//                executor.execute(newThread)
-//            }
-//        }
-//
-//        executor.shutdown()
-//        val finished = executor.awaitTermination(maxTime, TimeUnit.SECONDS)
-//        if (!finished) {
-//            println("Program will execute for more than a $maxTime seconds (terminating)")
-//            return null
-//        }
-//
-//        println("Checking done")
-//        val time2 = System.currentTimeMillis()
-//        println("Execution time: ${(time2 - time1) / 1000f} seconds")
-//
-//        return FinalResult(
-//            threadsManager.getBestValue(),
-//            threadsManager.getBestSubset(),
-//            ImageGenerator(threadsManager.getBestSubset().copy(), board).generate()
-//        )
+        println("Checking was done in: ${(time2 - time1) / 1000f} seconds")
+
+        return FinalResult(
+            threadsManager.getBestValue(),
+            threadsManager.getBestSubset(),
+            ImageGenerator(threadsManager.getBestSubset().copy(), board).generate()
+        )
     }
 
     private fun permute(list: List<Int>, l: Int, r: Int) {
-        var str = list.toMutableList()
-        if (l == r)
-//            println(str)
-        else {
+        val currentPermutation = list.toMutableList()
+
+        if (l == r) { // PERMUTATION IS DONE
+            val currentSubset = Subset(blocks, currentPermutation.toIntArray())
+
+            // we can skip those that won't fit
+            if (currentSubset.totalArea > board.area) {
+                return
+            }
+
+            // we can skip those that can't generate better value
+            if (currentSubset.totalValue < threadsManager.getBestValue()) {
+                return
+            }
+
+            val newThread = CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy())
+            newThread.addListener(threadsManager)
+            executor.execute(newThread)
+
+        } else { // GENERATE FURTHER
             for (i in l..r) {
-                str[l] = str[i].also { str[i] = str[l] }
-                permute(str, l + 1, r)
-                str[l] = str[i].also { str[i] = str[l] }
+                currentPermutation[l] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[l] }
+                permute(currentPermutation, l + 1, r)
+                currentPermutation[l] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[l] }
             }
         }
     }
-
-//    fun <T> permute(input: List<T>): List<List<T>> {
-//        if (input.size == 1) return listOf(input)
-//        val perms = mutableListOf<List<T>>()
-//        val toInsert = input[0]
-//        for (perm in permute(input.drop(1))) {
-//            for (i in 0..perm.size) {
-//                val newPerm = perm.toMutableList()
-//                newPerm.add(i, toInsert)
-//                perms.add(newPerm)
-//            }
-//        }
-//        return perms
-//    }
 }

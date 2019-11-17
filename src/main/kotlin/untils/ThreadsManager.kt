@@ -41,8 +41,10 @@ class ThreadsManager : ThreadCompleteListener {
     override fun notifyOfThreadComplete(thread: CheckingThread, canFit: Boolean) {
         if (canFit) {
             setBestValueAndSubset(thread.subset)
-            thread.removeListener(this)
         }
+
+        thread.removeListener(this)
+        thread.interrupt()
     }
 
 }
