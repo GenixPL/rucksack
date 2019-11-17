@@ -1,6 +1,7 @@
 package untils
 
 import models.Subset
+import printVerbose
 import java.util.concurrent.CopyOnWriteArraySet
 
 
@@ -32,11 +33,11 @@ class CheckingThread(
         // we can skip those that can't generate better value
         if (subset.totalValue <= threadsManager.getBestValue()) {
             notifyListeners(canFit)
-            println("thread doesn't check (smaller value)")
+            if (printVerbose) println("thread doesn't check (smaller value)")
             return
         }
 
-        println("New threads starts checking permutation: ${subset.permutation.joinToString()}")
+        if (printVerbose) println("New threads starts checking permutation: ${subset.permutation.joinToString()}")
 
         try {
             canFit = doRun()

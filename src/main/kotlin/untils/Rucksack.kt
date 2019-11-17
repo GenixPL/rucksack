@@ -6,6 +6,7 @@ import models.Block
 import models.Board
 import models.FinalResult
 import models.Subset
+import printVerbose
 import java.io.File
 import java.util.*
 import kotlin.math.pow
@@ -80,13 +81,13 @@ class Rucksack(pathToData: String) {
 
             // we can skip those that won't fit
             if (subsetForCurrentCombination.totalArea > board.area) {
-                println("skip combination (doesn't fit)")
+                if (printVerbose) println("skip combination (doesn't fit)")
                 continue
             }
 
             // we can skip those that can't generate better value
             if (subsetForCurrentCombination.totalValue <= threadsManager.getBestValue()) {
-                println("skip combination (smaller value)")
+                if (printVerbose) println("skip combination (smaller value)")
                 continue
             }
 
@@ -121,7 +122,7 @@ class Rucksack(pathToData: String) {
 
         // we can skip those that can't generate better value
         if (currentSubset.totalValue <= threadsManager.getBestValue()) {
-            println("skipping permutation check (smaller value)")
+            if (printVerbose) println("skipping permutation check (smaller value)")
             return
         }
 

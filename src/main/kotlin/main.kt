@@ -17,6 +17,7 @@ const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-im
 var maxThreads = 5
 var maxTime = 600L // seconds
 var imgMultiplier = 10
+val printVerbose: Boolean = false;
 
 val panelImage = JPanel() //JPanel which displays generated image
 val panelBlocks = JPanel() //JPanel which displays blocks one by one
