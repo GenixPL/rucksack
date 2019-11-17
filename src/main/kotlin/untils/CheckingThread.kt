@@ -26,6 +26,7 @@ class CheckingThread(
     }
 
     override fun run() {
+        println("Thread (${this.id}) starts checking subset of length: ${subset.blocks.size}")
         var canFit = false
         try {
             canFit = doRun()

@@ -17,6 +17,7 @@ class ThreadsManager : ThreadCompleteListener {
         readWriteLock.lock()
         try {
             if (subset.totalValue > bestValue) {
+                println("Threads Manager has received new best subset")
                 bestValue = subset.totalValue
                 bestSubset = subset.copy()
             }

@@ -59,7 +59,9 @@ class Rucksack(pathToData: String) {
         // checking from biggest combinations may reduce number of needed executions, since bigger
         // sets are more probable to contain bigger totalValues, but we still have to check all possibilities
         for (k in (blocks.size) downTo 1) {
+            println("Checking subsets of size $k")
             val allCombinationsForK = CombinationGenerator.generate(blocks.size, k)
+            println("\t number of combinations to check for this size: ${allCombinationsForK.size}")
             val allSubsetsForK = mutableListOf<Subset>()
             allCombinationsForK.forEach {
                 allSubsetsForK.add(Subset(blocks, it))
