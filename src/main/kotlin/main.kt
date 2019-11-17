@@ -12,10 +12,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.math.roundToInt
 
 var filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
-//    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data.txt"
-
 const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
-//    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
 
 var maxThreads = 10
 var maxTime = 3600L // seconds
