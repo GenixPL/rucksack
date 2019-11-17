@@ -9,7 +9,7 @@ import java.util.*
  */
 class SubsetChecker {
     private val subset: Subset
-    private val board: Board
+    val board: Board
     private val possibilities: Stack<Possibility> = Stack()
 
     constructor(subset: Subset, board: Board) {

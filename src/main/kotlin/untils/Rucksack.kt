@@ -58,14 +58,12 @@ class Rucksack(pathToData: String) {
         var counter = 0
         var j: Int
 
-        /*Run from counter 000..0 to 111..1*/
         while (counter < powerSetSize) {
             val combination = ArrayList<Int>()
 
             // GENERATE COMBINATION - START
             j = 0
             while (j < size) {
-                /* Check if jth bit in the counter is set If set then print jth element from set */
                 if (counter and (1 shl j) > 0) {
                     combination.add(j)
                 }
@@ -106,17 +104,7 @@ class Rucksack(pathToData: String) {
         if (l == r) { // PERMUTATION IS DONE
             val currentSubset = Subset(blocks, currentPermutation.toIntArray())
 
-            // we can skip those that won't fit
-            if (currentSubset.totalArea > board.area) {
-                return
-            }
-
-            // we can skip those that can't generate better value
-            if (currentSubset.totalValue < threadsManager.getBestValue()) {
-                return
-            }
-
-            val newThread = CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy())
+            val newThread = CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy(), threadsManager)
             newThread.addListener(threadsManager)
             executor.execute(newThread)
 
