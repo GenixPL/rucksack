@@ -11,11 +11,11 @@ import javax.swing.border.Border
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.math.roundToInt
 
-var filepath = //const val filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
-    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data.txt"
+var filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
+//    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/data.txt"
 
-const val outputPath = //const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
-    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
+const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
+//    "C:/Users/klosi/Desktop/Studies/7th SEMESTER/Algoriths and computability/Project/rucksack/src/main/kotlin/result-img.jpg"
 
 //TODO: GUI print whose 'printlns' that are here and inside 'Rucksack.kt', because they are somehow
 // important, and don't cause much of a delay
