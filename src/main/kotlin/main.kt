@@ -14,16 +14,16 @@ import kotlin.math.roundToInt
 var filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
 const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
 
-var maxThreads = 1
-var maxTime = 3600L // seconds
-var imgMultiplier = 100
+var maxThreads = 5
+var maxTime = 600L // seconds
+var imgMultiplier = 10
 
 val panelImage = JPanel() //JPanel which displays generated image
 val panelBlocks = JPanel() //JPanel which displays blocks one by one
 
-val textMaxThreads = JTextField("1")
-val textMaxTime = JTextField("3600")
-val textImgMultiplier = JTextField("100")
+val textMaxThreads = JTextField(maxThreads.toString())
+val textMaxTime = JTextField(maxTime.toString())
+val textImgMultiplier = JTextField(imgMultiplier.toString())
 
 fun main() {
     runProgram()
