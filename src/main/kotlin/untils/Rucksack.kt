@@ -20,7 +20,7 @@ class Rucksack(pathToData: String) {
     private val blocks = mutableListOf<Block>()
 
     private val threadsManager = ThreadsManager()
-    private val executor = Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor
+    private val executor = BlockingExecutor(Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor)
 
     init {
         val file = File(pathToData)
@@ -76,11 +76,27 @@ class Rucksack(pathToData: String) {
                 continue
             }
 
+            var subsetForCurrentCombination = Subset(blocks, combination.toIntArray())
+
+            // we can skip those that won't fit
+            if (subsetForCurrentCombination.totalArea > board.area) {
+                println("skip combination (doesn't fit)")
+                continue
+            }
+
+            // we can skip those that can't generate better value
+            if (subsetForCurrentCombination.totalValue <= threadsManager.getBestValue()) {
+                println("skip combination (smaller value)")
+                continue
+            }
+
+            println("checking combination: $combination")
+
             permute(combination, 0, combination.size - 1)
         }
 
-        executor.shutdown()
-        val finished = executor.awaitTermination(maxTime, TimeUnit.SECONDS)
+        executor.delegate.shutdown()
+        val finished = executor.delegate.awaitTermination(maxTime, TimeUnit.SECONDS)
         if (!finished) {
             println("Program terminates due to time limit ($maxTime)")
             return null
@@ -104,7 +120,14 @@ class Rucksack(pathToData: String) {
         if (l == r) { // PERMUTATION IS DONE
             val currentSubset = Subset(blocks, currentPermutation.toIntArray())
 
-            val newThread = CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy(), threadsManager)
+            // we can skip those that can't generate better value
+            if (currentSubset.totalValue <= threadsManager.getBestValue()) {
+                println("skipping permutation check (smaller value)")
+                return
+            }
+
+            val newThread =
+                CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy(), threadsManager)
             newThread.addListener(threadsManager)
             executor.execute(newThread)
 

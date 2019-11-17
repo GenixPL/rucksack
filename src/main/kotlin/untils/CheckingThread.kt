@@ -29,17 +29,10 @@ class CheckingThread(
     override fun run() {
         var canFit = false
 
-        // we can skip those that won't fit
-        if (subset.totalArea > subsetChecker.board.area) {
-            notifyListeners(canFit)
-//            println("thread doesn't check")
-            return
-        }
-
         // we can skip those that can't generate better value
         if (subset.totalValue <= threadsManager.getBestValue()) {
             notifyListeners(canFit)
-//            println("thread doesn't check")
+            println("thread doesn't check (smaller value)")
             return
         }
 

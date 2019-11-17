@@ -1,14 +1,14 @@
 package untils
 
-import jdk.internal.jshell.debug.InternalDebugControl.release
 import maxThreads
 import java.util.concurrent.Semaphore
 import java.util.concurrent.Executor
+import java.util.concurrent.ThreadPoolExecutor
 
 
-private class BlockingExecutor private constructor(internal val delegate: Executor) : Executor {
+class BlockingExecutor constructor(val delegate: ThreadPoolExecutor) : Executor {
 
-    internal val semaphore: Semaphore = Semaphore(maxThreads)
+    private val semaphore: Semaphore = Semaphore(maxThreads)
 
     override fun execute(command: Runnable) {
         try {
