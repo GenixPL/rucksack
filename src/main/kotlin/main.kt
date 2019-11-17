@@ -26,7 +26,8 @@ val textMaxTime = JTextField("3600")
 val textImgMultiplier = JTextField("100")
 
 fun main() {
-    runProgram()
+    Rucksack(filepath).findBest()
+//    runProgram()
 }
 
 fun runProgram(){
