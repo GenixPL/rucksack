@@ -48,6 +48,17 @@ class Rucksack(pathToData: String) {
     }
 
     fun findBest(): FinalResult? {
+        // SETTING TIME LIMIT
+        Timer().schedule(
+            object : TimerTask() {
+                override fun run() {
+                    println("Program terminates due to time limit ($maxTime)")
+                    executor.delegate.shutdown()
+                }
+            },
+            maxTime * 1000
+        )
+
         println()
         println()
         println("Checking starts...")
