@@ -37,7 +37,7 @@ class CheckingThread(
             return
         }
 
-        if (printVerbose) println("New threads starts checking permutation: ${subset.permutation.joinToString()}")
+        if (printVerbose) println("New thread starts checking permutation: ${subset.permutation.joinToString()}")
 
         try {
             canFit = doRun()
