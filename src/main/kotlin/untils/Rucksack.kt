@@ -117,15 +117,15 @@ class Rucksack(pathToData: String) {
     private fun permute(list: List<Int>, l: Int, r: Int) {
         val currentPermutation = list.toMutableList()
 
+        val currentSubset = Subset(blocks, currentPermutation.toIntArray())
+
+        // we can skip those that can't generate better value
+        if (currentSubset.totalValue <= threadsManager.getBestValue()) {
+            println("skipping permutation check (smaller value)")
+            return
+        }
+
         if (l == r) { // PERMUTATION IS DONE
-            val currentSubset = Subset(blocks, currentPermutation.toIntArray())
-
-            // we can skip those that can't generate better value
-            if (currentSubset.totalValue <= threadsManager.getBestValue()) {
-                println("skipping permutation check (smaller value)")
-                return
-            }
-
             val newThread =
                 CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy(), threadsManager)
             newThread.addListener(threadsManager)
