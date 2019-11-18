@@ -70,8 +70,10 @@ class SubsetChecker {
         if (space.canFit(block)) {
             canFitBlock = true
 
-            val newSpaces = mutableListOf<Space>()
-            newSpaces.addAll(space.handleFit(block))
+            var newSpacesToBePassed = mutableListOf<Space>()
+            var newlyGeneratedSpaces = space.handleFit(block).sortedByDescending { it.getArea() }
+            // just add all, the can't intersect with any other
+            newSpacesToBePassed.addAll(newlyGeneratedSpaces)
 
             for (j in 0 until possibility.spaces.size) {
                 if (currentSpaceIndex == j) {
@@ -81,19 +83,33 @@ class SubsetChecker {
                 // if current block will intersect with some space, then add new spaces, in oder case
                 // just add the same (untouched) space
                 if (possibility.spaces[j].willIntersect(block, space.posX, space.posY)) {
-                    newSpaces.addAll(
-                        possibility.spaces[j].handleIntersection(
-                            block,
-                            space.posX,
-                            space.posY
-                        )
-                    )
+                    val newlyGeneratedSpaces2 = possibility.spaces[j].handleIntersection(
+                        block,
+                        space.posX,
+                        space.posY
+                    ).sortedByDescending { it.getArea() }
+
+                    // add only those that are not contained inside other spaces
+                    for (a in newlyGeneratedSpaces2.indices) {
+                        var isContained = false;
+
+                        for (b in newSpacesToBePassed.indices) {
+                            if (newSpacesToBePassed[b].doesContain(newlyGeneratedSpaces2[a])) {
+                                isContained = true
+                            }
+                        }
+
+                        if (!isContained) {
+                            newSpacesToBePassed.add(newlyGeneratedSpaces2[a])
+                        }
+                    }
+
                 } else {
-                    newSpaces.add(possibility.spaces[j].copy())
+                    newSpacesToBePassed.add(possibility.spaces[j].copy())
                 }
             }
 
-            possibilities.push(Possibility(possibility.copyBlocks(), newSpaces))
+            possibilities.push(Possibility(possibility.copyBlocks(), newSpacesToBePassed))
         }
 
         return canFitBlock

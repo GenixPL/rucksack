@@ -6,6 +6,19 @@ data class Space(
     val width: Int,
     val height: Int
 ) {
+    fun getArea(): Int {
+        return width * height
+    }
+
+    fun doesContain(otherSpace: Space): Boolean {
+        return (otherSpace.posX + otherSpace.width) <= (posX + width) &&
+                (otherSpace.posX) >= (posX) &&
+                (otherSpace.posY) >= (posY) &&
+                (otherSpace.posY + otherSpace.height) <= (posY + height)
+    }
+
+    //
+
     fun canFit(block: Block): Boolean {
         return (block.width <= width) && (block.height <= height)
     }
@@ -29,6 +42,8 @@ data class Space(
             return listOf(space1, space2)
         }
     }
+
+    //
 
     fun willIntersect(block: Block, x: Int, y: Int): Boolean {
         val sxStart: Int = posX
