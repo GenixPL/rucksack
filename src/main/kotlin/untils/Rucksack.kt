@@ -109,13 +109,13 @@ class Rucksack(pathToData: String) {
 
             // we can skip those that won't fit
             if (currentSubset.totalArea > board.area) {
-                if (printVerbose) println("skip combination (doesn't fit)")
+                if (printVerbose) println("(without) skip combination (doesn't fit)")
                 continue
             }
 
             // we can skip those that can't generate better value
             if (currentSubset.totalValue <= threadsManager.getBestValue()) {
-                if (printVerbose) println("skip combination (smaller value)")
+                if (printVerbose) println("(without) skip combination (smaller value)")
                 continue
             }
 
@@ -163,13 +163,13 @@ class Rucksack(pathToData: String) {
 
             // we can skip those that won't fit
             if (subsetForCurrentCombination.totalArea > board.area) {
-                if (printVerbose) println("skip combination (doesn't fit)")
+                if (printVerbose) println("(with) skip combination (doesn't fit)")
                 continue
             }
 
             // we can skip those that can't generate better value
             if (subsetForCurrentCombination.totalValue <= threadsManager.getBestValue()) {
-                if (printVerbose) println("skip combination (smaller value)")
+                if (printVerbose) println("(with) skip combination (smaller value)")
                 continue
             }
 
