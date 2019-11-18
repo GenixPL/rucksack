@@ -211,7 +211,7 @@ fun displayBlocks() {
 fun createImageIcon(w: Int, h: Int, v: Float): ImageIcon {
     val bufferedImage = BufferedImage(w * imgMultiplier, h * imgMultiplier, BufferedImage.TYPE_INT_RGB)
     val graphics2D = bufferedImage.createGraphics()
-    graphics2D.paint = Color((255 * v).roundToInt(), 0, 0)
+    graphics2D.paint = Color((150 * v).roundToInt() + 105, 0, 0)
     graphics2D.fillRect(0, 0, w * imgMultiplier, h * imgMultiplier)
 
     return ImageIcon(bufferedImage)

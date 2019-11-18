@@ -47,7 +47,7 @@ class ImageGenerator {
 
             val v = this.subset.blocks[i].value.toFloat() / maxValue
 
-            g.color = Color((255 * v).roundToInt(), 0, 0)
+            g.color = Color((150 * v).roundToInt() + 105, 0, 0)
 
             val x = blocks[i].posX * mul
             val y = blocks[i].posY * mul
