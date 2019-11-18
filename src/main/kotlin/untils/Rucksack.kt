@@ -23,7 +23,6 @@ class Rucksack(pathToData: String) {
     private val threadsManager = ThreadsManager()
     private val executor = BlockingExecutor(Executors.newFixedThreadPool(maxThreads) as ThreadPoolExecutor)
 
-    private var lastCheckingTimestamp = Timestamp(System.currentTimeMillis())
 
     init {
         val file = File(pathToData)
@@ -55,7 +54,7 @@ class Rucksack(pathToData: String) {
             object : TimerTask() {
                 override fun run() {
                     println("Program terminates due to time limit ($maxTime)")
-                    executor.delegate.shutdown()
+                    executor.delegate.shutdownNow()
                 }
             },
             maxTime * 1000
