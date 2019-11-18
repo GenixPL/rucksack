@@ -84,21 +84,21 @@ class Rucksack(pathToData: String) {
         // GENERATE COMBINATIONS - INIT
         val size: Double = blocks.size.toDouble()
         val powerSetSize: Long = (2.0.pow(size)).toLong()
-        var counter = 0
+        var counter = powerSetSize
         var j: Int
 
-        while (counter < powerSetSize) {
+        while (counter >= 0) {
             val combination = ArrayList<Int>()
 
             // GENERATE COMBINATION - START
             j = 0
             while (j < size) {
-                if (counter and (1 shl j) > 0) {
+                if (counter and (1 shl j).toLong() > 0) {
                     combination.add(j)
                 }
                 j++
             }
-            counter++
+            counter--
             // GENERATE COMBINATION - END
 
             if (combination.isEmpty()) {
