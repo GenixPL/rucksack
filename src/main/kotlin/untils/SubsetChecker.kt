@@ -32,7 +32,7 @@ class SubsetChecker {
             }
 
             if (curPossibility.spaces.size == 0) {
-                break
+                continue
             }
 
             val curBlock = curPossibility.blocks.removeAt(0)

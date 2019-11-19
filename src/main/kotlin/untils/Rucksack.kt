@@ -8,7 +8,6 @@ import models.FinalResult
 import models.Subset
 import printVerbose
 import java.io.File
-import java.sql.Timestamp
 import java.util.*
 import kotlin.math.pow
 import java.util.ArrayList
@@ -185,7 +184,7 @@ class Rucksack(pathToData: String) {
         )
     }
 
-    private fun permute(list: List<Int>, l: Int, r: Int) {
+    private fun permute(list: List<Int>, start: Int, end: Int) {
         val currentPermutation = list.toMutableList()
 
         val currentSubset = Subset(blocks, currentPermutation.toIntArray())
@@ -196,17 +195,17 @@ class Rucksack(pathToData: String) {
             return
         }
 
-        if (l == r) { // PERMUTATION IS DONE
+        if (start == end) { // PERMUTATION IS DONE
             val newThread =
                 CheckingThread(SubsetChecker(currentSubset.copy(), board), currentSubset.copy(), threadsManager)
             newThread.addListener(threadsManager)
             executor.execute(newThread)
 
         } else { // GENERATE FURTHER
-            for (i in l..r) {
-                currentPermutation[l] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[l] }
-                permute(currentPermutation, l + 1, r)
-                currentPermutation[l] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[l] }
+            for (i in start..end) {
+                currentPermutation[start] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[start] }
+                permute(currentPermutation, start + 1, end)
+                currentPermutation[start] = currentPermutation[i].also { currentPermutation[i] = currentPermutation[start] }
             }
         }
     }
