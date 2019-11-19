@@ -14,9 +14,9 @@ import kotlin.math.roundToInt
 var filepath = "/Users/genix/Projects/rucksack/src/main/kotlin/data.txt"
 const val outputPath = "/Users/genix/Projects/rucksack/src/main/kotlin/result-img.jpg"
 
-var maxThreads = 5
-var maxTime = 600L // seconds
-var imgMultiplier = 10
+var maxThreads = 4
+var maxTime = 1200L // seconds
+var imgMultiplier = 20
 val printVerbose: Boolean = false
 
 val panelImage = JPanel() //JPanel which displays generated image
